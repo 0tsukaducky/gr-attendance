@@ -32,9 +32,24 @@
   <div id="result">読み取り待機中</div>
 
   <script>
-    let scanner;
+    
+const SCRIPT_URL = "https://script.google.com/a/macros/gl.pen-kanagawa.ed.jp/s/AKfycbwMFgn5AwBFSveRdcCdukbwcUWtRN3yHCHryI61nkkOQw2lfLKl2GVj47Gfkjo4NUePxg/exec";
 
-    async function startScanner() {
+async function sendAttendance(studentId) {
+  try {
+    const response = await fetch(SCRIPT_URL, {
+      method: "POST",
+      body: studentId
+    });
+
+    const result = await response.text();
+    document.getElementById("result").textContent = result;
+
+  } catch (error) {
+    document.getElementById("result").textContent =
+      "送信エラー：" + error.message;
+  }
+
       scanner = new Html5Qrcode("reader");
 
       try {
@@ -42,10 +57,8 @@
           { facingMode: "environment" },
           { fps: 10, qrbox: { width: 250, height: 250 } },
           (decodedText) => {
-            document.getElementById("result").textContent =
-              "読み取り成功： " + decodedText;
-
-            scanner.stop();
+      sendAttendance(decodedText);
+scanner.stop();      
           }
         );
       } catch (error) {
