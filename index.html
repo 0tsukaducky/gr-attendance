@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QR出席確認</title>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    #reader {
+      width: 100%;
+      max-width: 450px;
+      margin: auto;
+    }
+    #result {
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>QR出席確認</h1>
+  <p>QRコードをカメラに映してください。</p>
+
+  <div id="reader"></div>
+  <div id="result">読み取り待機中</div>
+
+  <script>
+    let scanner;
+
+    async function startScanner() {
+      scanner = new Html5Qrcode("reader");
+
+      try {
+        await scanner.start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: { width: 250, height: 250 } },
+          (decodedText) => {
+            document.getElementById("result").textContent =
+              "読み取り成功： " + decodedText;
+
+            scanner.stop();
+          }
+        );
+      } catch (error) {
+        document.getElementById("result").textContent =
+          "エラー：" + error;
+      }
+    }
+
+    startScanner();
+  </script>
+</body>
+</html>
